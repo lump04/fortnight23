@@ -1,0 +1,13 @@
+#player {
+    top: 10px;
+    left: 130px;
+}
+
+#blocker {
+    height: 240px;
+    width: 400px;
+    top: 10px;
+    left: 130px;
+    background-color: black;
+}
+
