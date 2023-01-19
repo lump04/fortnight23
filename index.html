@@ -6,7 +6,7 @@
   </head>
   <body>
     <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
-    <div id="player"></div>
+    <div id="player" style="position: absolute"></div>
 
     <script>
       // 2. This code loads the IFrame Player API code asynchronously.
@@ -57,13 +57,13 @@
     <!--<div id='blocker'></div>-->
     <script>
       // Create the application helper and add its render target to the page
-      let app = new PIXI.Application({ width: 640, height: 360, background: '#1099bb' });
+      let app = new PIXI.Application({ width: 640, height: 360, background: 'black' });
       app.view.style.position = 'absolute';
       app.view.style.zIndex = 1000;
       document.body.appendChild(app.view);
 
       // Add Buttons
-      drawMainMenu()
+      drawMainMenu();
 
       // Create the sprite and add it to the stage
       //let sprite = PIXI.Sprite.from('button.png');
@@ -80,26 +80,75 @@
 
       function drawMainMenu() {
         //const graphics = new PIXI.Graphics();
+        clearStage();
         const style = new PIXI.TextStyle({
+          fontSize: 20,
           fill: ['#ffffff']
         });
 
-        createButton(style, "Q1", 100, 100, 'L-u3fkgZkO0', 0, 5);
-        createButton(style, "Q2", 200, 100, '7zQ3CjvCa0U', 0, 10);
+        createQnButton(style, "Q1", 100, 100, 'L-u3fkgZkO0', 0, 5.5);
+        createQnButton(style, "Q2", 200, 100, '7zQ3CjvCa0U', 0, 10);
       }
 
-      function createButton(style, label, x, y,
+      function drawQuestionPage(videoId, startTime, endTime) {
+        clearStage();
+        player.loadVideoById(
+          { 'videoId': videoId,
+            'startSeconds': startTime,
+            'endSeconds': endTime
+          }
+        );
+
+        const style = new PIXI.TextStyle({
+          fontSize: 20,
+          fill: ['#ffffff']
+        });
+        createRevealButton(style, 'Reveal', 150, 150);
+
+      }
+
+      function clearStage() {
+        var len = app.stage.children.length;
+        for (var i=0; i<len; i++) {
+          app.stage.removeChild(app.stage.children[0]);
+        }
+      }
+
+      function createQnButton(style, label, x, y,
               videoId, startTime, endTime) {
         let sprite = PIXI.Sprite.from('button.png');
         sprite.pivot.set(50, 50);
         sprite.x = x + 25;
-        sprite.y = y + 10;
+        sprite.y = y;
         sprite.interactive = true;
-        sprite.on('pointerdown', (event) => { player.loadVideoById(
-                        { 'videoId': videoId,
-                          'startSeconds': startTime,
-                          'endSeconds': endTime
-                        });});
+        sprite.cursor = 'pointer';
+        sprite.on('pointerdown', (event) => {
+                drawQuestionPage(videoId, startTime, endTime);
+        });
+        app.stage.addChild(sprite);
+
+        let elapsed = 0.0;
+        app.ticker.add((delta) => {
+          elapsed += delta;
+          sprite.rotation += Math.cos(elapsed/10.0) * 0.003;
+        });
+
+        const text = new PIXI.Text(label, style);
+        text.x = x;
+        text.y = y;
+        app.stage.addChild(text);
+      }
+
+      function createRevealButton(style, label, x, y) {
+        let sprite = PIXI.Sprite.from('button.png');
+        sprite.pivot.set(50, 50);
+        sprite.x = x + 25;
+        sprite.y = y;
+        sprite.interactive = true;
+        sprite.cursor = 'pointer';
+        sprite.on('pointerdown', (event) => {
+                app.view.style.zIndex = -1;
+        });
         app.stage.addChild(sprite);
 
         let elapsed = 0.0;
