@@ -87,7 +87,7 @@
         });
 
         createQnButton(style, "Q1", 100, 100, 'L-u3fkgZkO0', 0, 5.5);
-        createQnButton(style, "Q2", 200, 100, '7zQ3CjvCa0U', 0, 10);
+        createQnButton(style, "Q2", 200, 100, '7zQ3CjvCa0U', 225, 10);
       }
 
       function drawQuestionPage(videoId, startTime, endTime) {
@@ -103,8 +103,9 @@
           fontSize: 20,
           fill: ['#ffffff']
         });
-        createRevealButton(style, 'Reveal', 150, 150);
-
+        createReplayButton(style, 'Replay', 120, 150)
+        createRevealButton(style, 'Reveal', 270, 150);
+        createMenuButton(style, 'Back', 450, 150);
       }
 
       function clearStage() {
@@ -142,12 +143,68 @@
       function createRevealButton(style, label, x, y) {
         let sprite = PIXI.Sprite.from('button.png');
         sprite.pivot.set(50, 50);
-        sprite.x = x + 25;
-        sprite.y = y;
+        sprite.scale.set(1.5, 1.5);
+        sprite.x = x + 50;
+        sprite.y = y ;
         sprite.interactive = true;
         sprite.cursor = 'pointer';
         sprite.on('pointerdown', (event) => {
+                clearStage();
                 app.view.style.zIndex = -1;
+                player.playVideo();
+                createMenuButton(style, 'Back', 250, 300);
+        });
+        app.stage.addChild(sprite);
+
+        let elapsed = 0.0;
+        app.ticker.add((delta) => {
+          elapsed += delta;
+          sprite.rotation += Math.cos(elapsed/10.0) * 0.003;
+        });
+
+        const text = new PIXI.Text(label, style);
+        text.x = x;
+        text.y = y;
+        app.stage.addChild(text);
+      }
+
+      function createMenuButton(style, label, x, y) {
+        let sprite = PIXI.Sprite.from('button.png');
+        sprite.pivot.set(50, 50);
+        sprite.scale.set(1.5, 1.5);
+        sprite.x = x + 35;
+        sprite.y = y ;
+        sprite.interactive = true;
+        sprite.cursor = 'pointer';
+        sprite.on('pointerdown', (event) => {
+            player.stopVideo();
+            app.view.style.zIndex = 100;
+            drawMainMenu();
+        });
+        app.stage.addChild(sprite);
+
+        let elapsed = 0.0;
+        app.ticker.add((delta) => {
+          elapsed += delta;
+          sprite.rotation += Math.cos(elapsed/10.0) * 0.003;
+        });
+
+        const text = new PIXI.Text(label, style);
+        text.x = x;
+        text.y = y;
+        app.stage.addChild(text);
+      }
+
+      function createReplayButton(style, label, x, y) {
+        let sprite = PIXI.Sprite.from('button.png');
+        sprite.pivot.set(50, 50);
+        sprite.scale.set(1.5, 1.5);
+        sprite.x = x + 45;
+        sprite.y = y ;
+        sprite.interactive = true;
+        sprite.cursor = 'pointer';
+        sprite.on('pointerdown', (event) => {
+            player.playVideo();
         });
         app.stage.addChild(sprite);
 
