@@ -1,3 +1,6 @@
+<head>
+<link rel=”stylesheet” href=”https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css”rel=”nofollow” integrity=”sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm” crossorigin=”anonymous”>
+</head>
 <script>
 var tag = document.createElement('script');
 tag.src = "https://www.youtube.com/player_api";
@@ -182,15 +185,18 @@ function updatePlayer(){
 <br />
 <hr />
 
-<div id = "playerbox" style="position: relative">
+<div class="container">
+<div class="col-sm-9" id = "playerbox" style="position: relative">
   <div id="player" frameborder="1" style="border: 0.2em solid cadetblue"></div>
   <div id="cover" style="top: 0.2em; left: 0.2em; background-color: black; color: gray; pointer-events: none; position: absolute; text-align: center;">
   </div>
 </div>
 <div id="answer" style="color: #6aa84f; display: none; font-size: large;"></div>
 <h3>Quiz Selection:</h3>
+<div class="col-sm-3">
 <select id="select" size="5" onchange="updatePlayer();" onload="updatePlayer();"></select>
-
+</div>
+</div>
   
 <quiz title="2021-Day01-Q1" play="q2zIwG5FLdU" playstart="126" playend="158" reveal="" revealstart="" revealend="" answer="over the stoic"  difficulty="1"></quiz><p></p>
   
