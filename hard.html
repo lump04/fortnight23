@@ -15,7 +15,7 @@
         <div class=".container-fluid h-100 bg-dark">
             <div class="col-md-12" align="center">
                 <nav class="navbar navbar-dark bg-dark">
-                    <div class="text-light" align="left" style="font-size:200%"><i class="fa fa-star"></i></div>
+                    <div class="text-light" align="left" style="font-size:200%"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></div>
                     <h2 id="questionNo" class="text-light" align="left">Q1</h2>
                     <h2 id="scoreDisplay" class="text-light" align="right">Score: 0</h2>
                 </nav>
@@ -37,7 +37,7 @@
 
                 </div>
                 <script>
-                    var easyList = [];
+                    var hardList = [];
                     var songTitles = [];
                     var currSongId;
                     var currAns;
@@ -47,19 +47,19 @@
                         var qList = document.getElementsByTagName('quiz');
                         var qLen = qList.length;
                         for (var i=0; i<qLen; i++) {
-                            if (qList[i].getAttribute("difficulty") == "1")
-                                easyList.push(qList[i]);
+                            if (qList[i].getAttribute("difficulty") == "3")
+                                hardList.push(qList[i]);
                             songTitles.push(qList[i].getAttribute("answer"));
                         }
-                        qlen = easyList.length;
+                        qlen = hardList.length;
                         createSearchList(songTitles);
                         setRandomSong();
                     }
 
                     function setRandomSong() {
-                        var listLen = easyList.length;
+                        var listLen = hardList.length;
                         currSongId = Math.floor(Math.random() * listLen);
-                        currAns = easyList[currSongId].getAttribute("answer");
+                        currAns = hardList[currSongId].getAttribute("answer");
                         currQuestion++;
                         if (currQuestion >= 11) {
 
@@ -116,9 +116,9 @@
 
                     function loadVideo() {
                         var i = currSongId;
-                        var videoId = easyList[i].getAttribute("play");
-                        var startTime = easyList[i].getAttribute("playstart");
-                        var endTime = easyList[i].getAttribute("playend");
+                        var videoId = hardList[i].getAttribute("play");
+                        var startTime = hardList[i].getAttribute("playstart");
+                        var endTime = hardList[i].getAttribute("playend");
                         player.loadVideoById(
                           { 'videoId': videoId,
                             'startSeconds': startTime,
@@ -129,9 +129,9 @@
 
                     function loadReveal() {
                         var i = currSongId;
-                        var videoId = easyList[i].getAttribute("play");
-                        var startTime = easyList[i].getAttribute("revealStart");
-                        var endTime = easyList[i].getAttribute("revealEnd");
+                        var videoId = hardList[i].getAttribute("play");
+                        var startTime = hardList[i].getAttribute("revealStart");
+                        var endTime = hardList[i].getAttribute("revealEnd");
                         player.loadVideoById(
                           { 'videoId': videoId,
                             'startSeconds': startTime,
