@@ -10,16 +10,22 @@
 
         <div class=".container-fluid h-100 bg-dark">
             <div class="col-md-12" align="center">
-                <h2 class="text-light">Easy</h2>
+                <nav class="navbar navbar-dark bg-dark">
+                    <div class="text-light" align="left" style="font-size:200%"><i class="fa fa-star"></i></div>
+                    <h2 id="scoreDisplay" class="text-light" align="right">Score: 0</h2>
+                </nav>
                 <div id="player" style="position: absolute; left: 0px;"></div>
                 <div class="col-sm bg-dark"  id="blocker" style="position: absolute; height: 240px; left: 0px;">
-                    <button class="btn btn-primary my-2" onclick="loadVideo(1)">🕪</button>
+                    <button class="btn btn-primary my-2 fa fa-play" onclick="loadVideo(1)"></button>
 
                     <div class="input-group col-md-12 my-2" align="center">
                         <div class="input-group-prepend">
                             <span class="input-group-text fa fa-search"></span>
                         </div>
                         <input type="text" class="form-control" id="ansInput" onkeyup="filterList()" placeholder="Ans" title="Type the answer">
+                        <div class="input-group-append">
+                            <button class="btn btn-success" type="button" onclick="submitAnswer()">OK</button>
+                        </div>
                     </div>
 
                     <ul class="list-group bg-dark" id="songList" align="center">
@@ -29,6 +35,8 @@
                 <script>
                     var easyList = [];
                     var songTitles = [];
+                    var currAns;
+                    var score = 0;
                     window.onload = (event) => {
                         var qList = document.getElementsByTagName('quiz');
                         var qLen = qList.length;
@@ -49,8 +57,8 @@
                             item.setAttribute('class', 'list-group-item bg-secondary text-light');
                             var link = document.createElement('a');
                             link.innerHTML = titlesList[i];
-                            link.setAttribute('onclick', 'selectItem(this.innerHTML)');
                             item.appendChild(link);
+                            item.setAttribute('onclick', 'selectItem(this.children[0].innerHTML)');
                             searchParent.appendChild(item);
                         }
                     }
@@ -74,6 +82,12 @@
                     function selectItem(selectedValue) {
                         var input = document.getElementById("ansInput");
                         input.value = selectedValue;
+                    }
+
+                    function submitAnswer() {
+                        var answer = document.getElementById("ansInput");
+                        if (answer.value == currAns)
+                            score++;
                     }
 
                     function loadVideo(i) {
