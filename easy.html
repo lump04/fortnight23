@@ -6,29 +6,76 @@
     </head>
     <body style="height:100%">
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
         <div class=".container-fluid h-100 bg-dark">
             <div class="col-md-12" align="center">
                 <h2 class="text-light">Easy</h2>
-                <div id="player" style="position:absolute"></div>
-                <div class="col-sm bg-dark"  id="blocker" style="position: absolute; height: 240px">
-                    <button class="btn btn-primary" onclick="loadVideo(1)">Load</button>
-                    <button class="btn btn-primary" onclick="player.playVideo()">Play</button>
-                    <button class="btn btn-primary" onclick="player.stopVideo()">Stop</button>
+                <div id="player" style="position: absolute; left: 0px;"></div>
+                <div class="col-sm bg-dark"  id="blocker" style="position: absolute; height: 240px; left: 0px;">
+                    <button class="btn btn-primary my-2" onclick="loadVideo(1)">🕪</button>
+
+                    <div class="input-group col-md-12 my-2" align="center">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text fa fa-search"></span>
+                        </div>
+                        <input type="text" class="form-control" id="ansInput" onkeyup="filterList()" placeholder="Ans" title="Type the answer">
+                    </div>
+
+                    <ul class="list-group bg-dark" id="songList" align="center">
+                    </ul>
+
                 </div>
                 <script>
                     var easyList = [];
+                    var songTitles = [];
                     window.onload = (event) => {
                         var qList = document.getElementsByTagName('quiz');
                         var qLen = qList.length;
                         for (var i=0; i<qLen; i++) {
                             if (qList[i].getAttribute("difficulty") == "1")
                                 easyList.push(qList[i]);
+                            songTitles.push(qList[i].getAttribute("answer"));
                         }
                         qlen = easyList.length;
-                        for (var i=0; i<qLen; i++)
-                            console.log(easyList[i]);
+                        createSearchList(songTitles);
                     }
+
+                    function createSearchList(titlesList) {
+                        var searchParent = document.getElementById('songList');
+                        var titlesLen = titlesList.length;
+                        for (var i=0; i<titlesLen; i++) {
+                            var item = document.createElement('li');
+                            item.setAttribute('class', 'list-group-item bg-secondary text-light');
+                            var link = document.createElement('a');
+                            link.innerHTML = titlesList[i];
+                            link.setAttribute('onclick', 'selectItem(this.innerHTML)');
+                            item.appendChild(link);
+                            searchParent.appendChild(item);
+                        }
+                    }
+
+                    function filterList() {
+                        var input = document.getElementById("ansInput");
+                        console.log("Input: " + input);
+                        var filter = input.value.toUpperCase();
+                        var ul = document.getElementById('songList');
+                        li = ul.getElementsByTagName('li');
+                        for (var i=0; i<li.length; i++) {
+                            a = li[i].getElementsByTagName('a')[0];
+                            var txtValue = a.textContent || a.innerText;
+                            if (txtValue.toUpperCase().indexOf(filter) > -1)
+                                li[i].style.display = "";
+                            else
+                                li[i].style.display = "none";
+                        }
+                    }
+
+                    function selectItem(selectedValue) {
+                        var input = document.getElementById("ansInput");
+                        input.value = selectedValue;
+                    }
+
                     function loadVideo(i) {
                         var videoId = easyList[i].getAttribute("play");
                         var startTime = easyList[i].getAttribute("playstart");
