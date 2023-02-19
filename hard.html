@@ -19,6 +19,12 @@
                     <h2 id="questionNo" class="text-light" align="left">Q1</h2>
                     <h2 id="scoreDisplay" class="text-light" align="right">Score: 0</h2>
                 </nav>
+                <div class="col-sm bg-dark border border-light" style="position: absolute; height: 240px; left: 0px; z-index: 500">
+                    <h1 class="text-light" id="finalScore"></h1>
+                    <form action="./index.html">
+                        <button class="btn btn-primary my-2"><i class="fa fa-home"></i> Home</button>
+                    </form>
+                </div>
                 <div class="col-sm bg-dark"  id="blocker" style="position: absolute; height: 240px; left: 0px; z-index: 1000">
                     <button class="btn btn-primary my-2 fa fa-play" onclick="loadVideo()"></button>
 
@@ -68,10 +74,20 @@
                         currAns = hardList[currSongId].getAttribute("answer");
                         currQuestion++;
                         if (currQuestion >= 11) {
-
+                            showFinalScore();
                         }
-                        var questionLabel = document.getElementById("questionNo");
-                        questionLabel.innerHTML = "Q" + currQuestion;
+                        else {
+                            var questionLabel = document.getElementById("questionNo");
+                            questionLabel.innerHTML = "Q" + currQuestion;
+                        }
+                    }
+
+                    function showFinalScore() {
+                        var finalScore = document.getElementById('finalScore');
+                        finalScore.innerHTML = 'Your Score: ' + score;
+                        var songList = document.getElementById('songList');
+                        songList.style.display = "none";
+                        finalScore.parentElement.style.zIndex = 1001;
                     }
 
                     function createSearchList(titlesList) {
@@ -237,7 +253,7 @@
                 <quiz title="2022-Day01-Q2" play="79bmOZRPycQ" playstart="76.6" playend="78.1" reveal="" revealstart="" revealend="88.5" answer="～流れ・空虚・THIS WORD～ (~Nagare·Kuukyo·THIS WORD~)" difficulty="3"></quiz><p></p>
                   
                 <quiz title="2022-Day02-Q1" play="uWyktNgb5U4" playstart="153" playend="166" reveal="" revealstart="145" revealend="" answer="畢生皐月プロローグ (Hissei Satsuki Prologue)" difficulty="1"></quiz><p></p>
-                <quiz title="2022-Day02-Q2" play="bHjzKVBvqEg" playstart="229" playend="235.1" reveal="" revealstart="" revealend="238.3" answer="Ø Choir" difficulty="1"></quiz><p></p>
+                <quiz title="2022-Day02-Q2" play="bHjzKVBvqEg" playstart="229" playend="235.1" reveal="" revealstart="" revealend="238.3" answer="Ø Choir (0 Choir)" difficulty="1"></quiz><p></p>
                 
                 <quiz title="2022-Day03-Q1" play="ePiJyjBcqo8" playstart="207.9" playend="213.9" reveal="" revealstart="191.4" revealend="228" answer="シークレット (Secret)" difficulty="1"></quiz><p></p>
                 <quiz title="2022-Day03-Q2" play="YulbU8ByKPE" playstart="130.2" playend="133.9" reveal="" revealstart="" revealend="144" answer="PLOT" difficulty="2"></quiz><p></p>
