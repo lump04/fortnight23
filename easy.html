@@ -10,7 +10,7 @@
 
         <div id="playerContainer" style="position: absolute; z-index: -1; width:80%; height: 80%; left: 10%">
             <div id="player" style="width:80%; height:80%; position: absolute; top: 80px; left: 10%; z-index: -1;" align="center"></div>
-            <button class="btn btn-primary my-2" onclick="hideVideo()">x</button>
+            <button class="btn btn-primary my-2" style="position: absolute; bottom: 0; right: 0;" onclick="clearInput(); hideVideo()">Next &gt</button>
         </div>
         <div class=".container-fluid h-100 bg-dark">
             <div class="col-md-12" align="center">
@@ -39,6 +39,7 @@
                 <script>
                     var easyList = [];
                     var songTitles = [];
+                    var chosenSongs = [];
                     var currSongId;
                     var currAns;
                     var currQuestion = 0;
@@ -58,7 +59,12 @@
 
                     function setRandomSong() {
                         var listLen = easyList.length;
-                        currSongId = Math.floor(Math.random() * listLen);
+                        // ensure no repeats
+                        do {
+                            currSongId = Math.floor(Math.random() * listLen);
+                        } while (chosenSongs.indexOf(currSongId) != -1)
+                        chosenSongs.push(currSongId);
+
                         currAns = easyList[currSongId].getAttribute("answer");
                         currQuestion++;
                         if (currQuestion >= 11) {
@@ -100,6 +106,12 @@
                     function selectItem(selectedValue) {
                         var input = document.getElementById("ansInput");
                         input.value = selectedValue;
+                    }
+
+                    function clearInput() {
+                        var input = document.getElementById("ansInput");
+                        input.value = "";
+                        filterList();
                     }
 
                     function submitAnswer() {
