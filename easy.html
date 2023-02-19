@@ -68,7 +68,7 @@
                         // ensure no repeats
                         do {
                             currSongId = Math.floor(Math.random() * listLen);
-                        } while (chosenSongs.indexOf(currSongId) != -1)
+                        } while (chosenSongs.indexOf(currSongId) != -1);
                         chosenSongs.push(currSongId);
 
                         currAns = easyList[currSongId].getAttribute("answer");
@@ -157,7 +157,9 @@
 
                     function loadReveal() {
                         var i = currSongId;
-                        var videoId = easyList[i].getAttribute("play");
+                        var videoId = easyList[i].getAttribute("reveal");
+                        if (videoId == "")
+                            videoId = easyList[i].getAttribute("play");
                         var startTime = easyList[i].getAttribute("revealStart");
                         var endTime = easyList[i].getAttribute("revealEnd");
                         player.loadVideoById(
@@ -166,6 +168,7 @@
                             'endSeconds': endTime
                           }
                         );
+                        player.playVideo();
                     }
 
                     function hideVideo() {

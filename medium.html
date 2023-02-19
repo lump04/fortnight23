@@ -68,7 +68,7 @@
                         // ensure no repeats
                         do {
                             currSongId = Math.floor(Math.random() * listLen);
-                        } while (chosenSongs.indexOf(currSongId) != -1)
+                        } while (chosenSongs.indexOf(currSongId) != -1);
                         chosenSongs.push(currSongId);
 
                         currAns = mediumList[currSongId].getAttribute("answer");
@@ -158,7 +158,9 @@
 
                     function loadReveal() {
                         var i = currSongId;
-                        var videoId = mediumList[i].getAttribute("play");
+                        var videoId = mediumList[i].getAttribute("reveal");
+                        if (videoId == "")
+                            videoId = mediumList[i].getAttribute("play");
                         var startTime = mediumList[i].getAttribute("revealStart");
                         var endTime = mediumList[i].getAttribute("revealEnd");
                         player.loadVideoById(
