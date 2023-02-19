@@ -66,10 +66,10 @@
       app.view.style.zIndex = 1000;
       document.body.appendChild(app.view);
 
-      drawTitleScreen();
+      //drawTitleScreen();
 
       // Add Buttons
-      //drawMainMenu();
+      drawMainMenu();
 
       // Create the sprite and add it to the stage
       //let sprite = PIXI.Sprite.from('button.png');
@@ -87,7 +87,7 @@
       function drawTitleScreen() {
         clearStage();
         const style = new PIXI.TextStyle({
-          fontSize: 50,
+          fontSize: 20,
           fontStyle: 'italic',
           fill: ['#3355ff'], //'#33ccff'], // gradient
           strokeThickness: 5,
