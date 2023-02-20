@@ -64,8 +64,8 @@
 
                         if (localStorage.getItem("hasCodeRunBefore") === null) {
                             var chrome   = navigator.userAgent.indexOf('Chrome') > -1;
-                            if (chrome)
-                                alert('Click ok to load');
+                            //if (chrome)
+                            alert('Click ok to load');
                             window.onload = function () {
                                 localStorage.setItem("hasCodeRunBefore", true);
                             }
