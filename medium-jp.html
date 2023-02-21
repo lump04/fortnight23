@@ -91,7 +91,7 @@
 
                     function showFinalScore() {
                         var finalScore = document.getElementById('finalScore');
-                        finalScore.innerHTML = 'Your Score: ' + score;
+                        finalScore.innerHTML = 'Your Score: ' + score + " / " + qnCount;
                         var songList = document.getElementById('songList');
                         songList.style.display = "none";
                         finalScore.parentElement.style.zIndex = 1001;
