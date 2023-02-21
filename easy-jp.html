@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html style="height:100%">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"rel="nofollow" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    </head>
+    <body style="height:100%" class="bg-dark">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        <div id="playerContainer" style="position: absolute; z-index: -1; width:80%; height: 80%; left: 10%">
+            <div id="player" style="width:80%; height:80%; position: absolute; top: 80px; left: 10%; z-index: -1;" align="center"></div>
+            <button class="btn btn-primary my-2" style="position: absolute; bottom: 0; right: 0;" onclick="clearInput(); hideVideo()">Next &gt</button>
+        </div>
+        <div class=".container-fluid h-100 bg-dark">
+            <div class="col-md-12" align="center">
+                <nav class="navbar navbar-dark bg-dark">
+                    <div class="text-light" align="left" style="font-size:200%"><i class="fa fa-star"></i></div>
+                    <h2 id="questionNo" class="text-light" align="left">Q1</h2>
+                    <h2 id="scoreDisplay" class="text-light" align="right">Score: 0</h2>
+                </nav>
+                <div class="col-sm bg-dark border border-light" style="position: absolute; height: 240px; left: 0px; z-index: 500">
+                    <h1 class="text-light" id="finalScore"></h1>
+                    <form action="./index.html">
+                        <button class="btn btn-primary my-2"><i class="fa fa-home"></i> Home</button>
+                    </form>
+                </div>
+                <div class="col-sm bg-dark"  id="blocker" style="position: absolute; height: 240px; left: 0px; z-index: 1000">
+                    <button class="btn btn-primary my-2 fa fa-play" onclick="loadVideo()"></button>
+
+                    <div class="input-group col-md-12 my-2" align="center">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text fa fa-search"></span>
+                        </div>
+                        <input type="text" class="form-control" id="ansInput" onkeyup="filterList()" placeholder="Ans" title="Type the answer">
+                        <div class="input-group-append">
+                            <button class="btn btn-success" type="button" onclick="submitAnswer()">OK</button>
+                        </div>
+                    </div>
+
+                    <ul class="list-group bg-dark" id="songList" align="center">
+                    </ul>
+
+                </div>
+                <script>
+                    var easyList = [];
+                    var songTitles = [];
+                    var chosenSongs = [];
+                    var currSongId;
+                    var currAns;
+                    var currQuestion = 0;
+                    var score = 0;
+                    var qnCount = 0;
+                    
+                    window.onload = (event) => {
+                        var qList = document.getElementsByTagName('quiz');
+                        var qLen = qList.length;
+                        for (var i=0; i<qLen; i++) {
+                            if (qList[i].getAttribute("difficulty") == "1"){
+                                easyList.push(qList[i]);
+                                qnCount++;
+                            }
+                            songTitles.push(qList[i].getAttribute("answer"));
+                        }
+                        qlen = easyList.length;
+                        createSearchList(songTitles);
+                        setRandomSong();
+                    }
+
+                    function setRandomSong() {
+                        var listLen = easyList.length;
+                        
+                        currQuestion++;
+                        if (currQuestion > qnCount) {
+                            showFinalScore();
+                        }
+                        else {
+                            var questionLabel = document.getElementById("questionNo");
+                            questionLabel.innerHTML = "Q" + currQuestion + " / " + qnCount;
+                            
+                            // ensure no repeats
+                            do {
+                                currSongId = Math.floor(Math.random() * listLen);
+                            } while (chosenSongs.indexOf(currSongId) != -1);
+                            chosenSongs.push(currSongId);
+
+                            currAns = easyList[currSongId].getAttribute("answer");
+                        }
+                        
+                    }
+
+                    function showFinalScore() {
+                        var finalScore = document.getElementById('finalScore');
+                        finalScore.innerHTML = 'Your Score: ' + score;
+                        var songList = document.getElementById('songList');
+                        songList.style.display = "none";
+                        finalScore.parentElement.style.zIndex = 1001;
+                    }
+
+                    function createSearchList(titlesList) {
+                        var searchParent = document.getElementById('songList');
+                        var titlesLen = titlesList.length;
+                        for (var i=0; i<titlesLen; i++) {
+                            var item = document.createElement('li');
+                            item.setAttribute('class', 'list-group-item bg-secondary text-light');
+                            var link = document.createElement('a');
+                            link.innerHTML = titlesList[i];
+                            item.appendChild(link);
+                            item.setAttribute('onclick', 'selectItem(this.children[0].innerHTML)');
+                            searchParent.appendChild(item);
+                        }
+                    }
+
+                    function filterList() {
+                        var input = document.getElementById("ansInput");
+                        var filter = input.value.toUpperCase();
+                        var ul = document.getElementById('songList');
+                        li = ul.getElementsByTagName('li');
+                        for (var i=0; i<li.length; i++) {
+                            a = li[i].getElementsByTagName('a')[0];
+                            var txtValue = a.textContent || a.innerText;
+                            if (txtValue.toUpperCase().indexOf(filter) > -1)
+                                li[i].style.display = "";
+                            else
+                                li[i].style.display = "none";
+                        }
+                    }
+
+                    function selectItem(selectedValue) {
+                        var input = document.getElementById("ansInput");
+                        input.value = selectedValue;
+                    }
+
+                    function clearInput() {
+                        var input = document.getElementById("ansInput");
+                        input.value = "";
+                        filterList();
+                    }
+
+                    function submitAnswer() {
+                        var answer = document.getElementById("ansInput");
+                        if (answer.value == currAns) {
+                            score++;
+                            var scoreDisplay = document.getElementById('scoreDisplay');
+                            scoreDisplay.innerHTML = "Score: " + score;
+                        }
+                        var vidPlayer = document.getElementById("playerContainer");
+                        vidPlayer.style.zIndex = 1001;
+                        loadReveal();
+                    }
+
+                    function loadVideo() {
+                        var i = currSongId;
+                        var videoId = easyList[i].getAttribute("play");
+                        var startTime = easyList[i].getAttribute("playstart");
+                        var endTime = easyList[i].getAttribute("playend");
+                        player.loadVideoById(
+                          { 'videoId': videoId,
+                            'startSeconds': startTime,
+                            'endSeconds': endTime
+                          }
+                        );
+                    }
+
+                    function loadReveal() {
+                        var i = currSongId;
+                        var videoId = easyList[i].getAttribute("reveal");
+                        if (videoId == "")
+                            videoId = easyList[i].getAttribute("play");
+                        var startTime = easyList[i].getAttribute("revealStart");
+                        var endTime = easyList[i].getAttribute("revealEnd");
+                        player.loadVideoById(
+                          { 'videoId': videoId,
+                            'startSeconds': startTime,
+                            'endSeconds': endTime
+                          }
+                        );
+                    }
+
+                    function hideVideo() {
+                        var vidPlayer = document.getElementById("playerContainer");
+                        vidPlayer.style.zIndex = -1;
+                        player.stopVideo();
+                        setRandomSong();
+                    }
+                </script>
+                <quiz title="2022-Day01-Q1" play="kk9djuXCmCY" playstart="142.7" playend="145" reveal="" revealstart="142.6" revealend="150.7" answer="シャカビーチ～Laka Laka La～ (Shakabeach~Laka Laka La~)" difficulty="1"></quiz><p></p>
+                <quiz title="2022-Day02-Q1" play="co3pUvgQ_Kk" playstart="131.4" playend="135" reveal="" revealstart="" revealend="145" answer="PLOT" difficulty="2"></quiz><p></p>
+                <quiz title="2022-Day02-Q2" play="iv9FzgXAX5Y" playstart="30.2" playend="33.4" reveal="" revealstart="25" revealend="39" answer="KINJITO" difficulty="2"></quiz><p></p>
+                  
+                <quiz title="2022-Day03-Q1" play="hLtLjhV7PR0" playstart="10" playend="27" reveal="" revealstart="" revealend="61" answer="クオリア (Qualia)" difficulty="1"></quiz><p></p>
+                <quiz title="2022-Day03-Q2" play="2uPzLcizRZ8" playstart="238.4" playend="246.7" reveal="" revealstart="225" revealend="246.7" answer="THE SONG" difficulty="1"></quiz><p></p>
+                  
+                <quiz title="2022-Day04-Q1" play="LaKp04a7hAM" playstart="220" playend="222.4" reveal="" revealstart="211" revealend="242.8" answer="哀しみはキット (Kanashimi Wa Kitto)" difficulty="2"></quiz><p></p>
+                <quiz title="2022-Day04-Q2" play="zw5wH_Tr21U" playstart="20.4" playend="23.5" reveal="" revealstart="12" revealend="34.6" answer="僕の言葉ではない これは僕達の言葉 (Boku No Kotoba De Wa Nai Kore Wa Bokutachi No Kotoba)" difficulty="1"></quiz><p></p>
+                  
+                <quiz title="2022-Day05-Q1" play="qOO_VdPS0xQ"  playstart="81"  playend="84.1"  reveal="" revealstart="81"  revealend="94"   answer="バーベル～皇帝の新しい服ver.～ (Barbell ~Koutei no Atarashii Fuku ver.~)" difficulty="3"></quiz><p></p>
+                <quiz title="2022-Day05-Q2" play="LXJSNjQOPks"  playstart="122" playend="125.7" reveal="" revealstart="121" revealend="138.6"  answer="99/100騙しの哲 (99/100 Damashi no Tetsu)" difficulty="2"></quiz><p></p>
+
+                <quiz title="2022-Day06-Q1" play="7wKjv4eLQ7s" playstart="217" playend="224" reveal="" revealstart="188.6" revealend="" answer="一滴の影響 (Itteki No Eikyou)" difficulty="2"></quiz><p></p>
+                <quiz title="2022-Day06-Q2" play="kDtnoLeJMdw" playstart="135.2" playend="136.2" reveal="" revealstart="131" revealend="" answer="GOLD" difficulty="3"></quiz><p></p>
+                  
+                <quiz title="2022-Day07-Q1" play="nDaVvnbVIkw" playstart="177.2" playend="181.3" reveal="" revealstart="171.9" revealend="192.4" answer="DECIDED" difficulty="1"></quiz><p></p>
+                <quiz title="2022-Day07-Q2" play="gErh5d3gpVk" playstart="42" playend="44.8" reveal="" revealstart="37.4" revealend="" answer="Colors of the Heart" difficulty="2"></quiz><p></p>
+                  
+                <quiz title="2022-Day08-Q1" play="fWHnghPgg4Q" playstart="250.2" playend="254.4" reveal="" revealstart="" revealend="264" answer="OXYMORON" difficulty="2"></quiz><p></p>
+                <quiz title="2022-Day08-Q2" play="IDuEih3KUUM" playstart="174.6" playend="175.4" reveal="" revealstart="" revealend="205" answer="GO-ON" difficulty="3"></quiz><p></p>
+
+                <quiz title="2022-Day09-Q1" play="0VMCMf0SCJM" playstart="89.4" playend="92.4" reveal="" revealstart="" revealend="98.3" answer="EN" difficulty="1"></quiz><p></p>
+                <quiz title="2022-Day09-Q2" play="ZIEQDjrAdwE" playstart="157.5" playend="162.5" reveal="" revealstart="" revealend="191.2" answer="儚くも永久のカナシ (Hakanaku mo Towa no Kanashi)" difficulty="3"></quiz><p></p>
+
+                <quiz title="2022-Day10-Q1" play="rF7WJmrLL-g" playstart="173.1" playend="175" reveal="" revealstart="170.9" revealend="187.9" answer="REVERSI" difficulty="2"></quiz><p></p>
+                <quiz title="2022-Day10-Q2" play="uap5DiPM0vY" playstart="281" playend="283.5" reveal="" revealstart="279" revealend="286" answer="Fight For Liberty" difficulty="1"></quiz><p></p>
+                  
+                <quiz title="2022-Day11-Q1" play="OG5DpaNU_X8" playstart="266.9" playend="270.2" reveal="" revealstart="257.4" revealend="282.9" answer="言わなくても伝わる あれは少し嘘だ (Iwanakute Mo Tsutawaru Are Wa Sukoshi Uso Da)" difficulty="2"></quiz>
+                <quiz title="2022-Day11-Q2" play="-RmW6tf2PSE" playstart="313.6" playend="321" reveal="" revealstart="290" revealend="" answer="恋いしくて (Koishikute)" difficulty="2"></quiz>
+
+                <quiz title="2022-Day12-Q1" play="SPQY3BmKfXo" playstart="113.6" playend="115.5" reveal="" revealstart="113" revealend="121.8" answer="N0.1" difficulty="3"></quiz><p></p>
+                <quiz title="2021-Day12-Q2" play="baZGH7TqBhA" playstart="417.2" playend="419.14" reveal="" revealstart="416" revealend="436" answer="いつか必ず死ぬことを忘れるな (Itsuka Kanarazu Shinu Koto wo Wasureruna)" difficulty="2"></quiz><p></p>
+                  
+                <quiz title="2022-Day13-Q1" play="FOJdXwTIxtQ" playstart="742" playend="753" reveal="" revealstart="733" revealend="770.3" answer="別世界 (Bessekai)" difficulty="2"></quiz><p></p>
+                <quiz title="2022-Day13-Q2" play="MYaVtNmYfuU" playstart="211.4" playend="215.6" reveal="" revealstart="194.2" revealend="" answer="誰が言った (Dare Ga Itta)" difficulty="3"></quiz><p></p>
+
+                <quiz title="2022-Day14-Q1" play="7zQ3CjvCa0U" playstart="30" playend="33" reveal="" revealstart="3" revealend="33" answer="ゼロの答 (Zero No Kotae)" difficulty="2"></quiz><p></p>
+                <quiz title="2022-Day14-Q1" play="ZqXmntTj33U" playstart="12.2" playend="16.6" reveal="" revealstart="" revealend="22" answer="Roots" difficulty="1"></quiz>
+                
+            </div>
+        </div>
+    </body>
+
+    <script>
+      // 2. This code loads the IFrame Player API code asynchronously.
+      var tag = document.createElement('script');
+
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      // 3. This function creates an <iframe> (and YouTube player)
+      //    after the API code downloads.
+      var player;
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+          height: '240',
+          width: '400',
+          videoId: 'M7lc1UVf-VE',
+          playerVars: {
+            'playsinline': 1
+          },
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+          }
+        });
+      }
+
+      // 4. The API will call this function when the video player is ready.
+      function onPlayerReady(event) {
+        console.log(event.target);
+        //event.target.playVideo();
+      }
+
+      // 5. The API calls this function when the player's state changes.
+      //    The function indicates that when playing a video (state=1),
+      //    the player should play for six seconds and then stop.
+      var done = false;
+      function onPlayerStateChange(event) {
+        if (event.data == YT.PlayerState.PLAYING && !done) {
+          setTimeout(stopVideo, 6000);
+          done = true;
+        }
+      }
+      function stopVideo() {
+        player.stopVideo();
+      }
+    </script>
+</html>
